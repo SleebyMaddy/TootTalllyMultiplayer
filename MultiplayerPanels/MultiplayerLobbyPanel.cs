@@ -427,6 +427,8 @@ namespace TootTallyMultiplayer.MultiplayerPanels
                 UserState.NotReady => new Color(.95f, .95f, .2f, 1),
                 UserState.Ready => new Color(.2f, .95f, .2f, 1),
                 UserState.Host => new Color(.95f, .2f, .95f, 1),
+                //UserState.TeamRed => new Color(.95f, .2f, .2f, 1), 
+                //UserState.TeamBlue => new Color(.2f, .2f, .95f, 1), probably move these to a button beside the player, rather than the players state
                 _ => new Color(.95f, .95f, .95f, 1),
             };
 

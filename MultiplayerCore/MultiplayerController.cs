@@ -672,6 +672,8 @@ namespace TootTallyMultiplayer
             Ready,
             Loading,
             Playing,
+            //TeamRed
+            //TeamBlue
         }
 
     }

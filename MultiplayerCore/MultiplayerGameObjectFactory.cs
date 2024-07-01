@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BepInEx.Configuration;
+using System;
 using System.Linq;
 using TMPro;
 using TootTallyCore;
@@ -15,6 +16,7 @@ namespace TootTallyMultiplayer
     {
         private static TMP_InputField _inputFieldPrefab;
         private static GameObject _userCardPrefab, _liveScorePrefab, _pointScorePrefab;
+        private static Toggle _togglePrefab;
 
         private static bool _isInitialized;
 
@@ -122,6 +124,15 @@ namespace TootTallyMultiplayer
             _inputFieldPrefab.textViewport = _inputFieldPrefab.textComponent.rectTransform;
 
             GameObject.DontDestroyOnLoad(_inputFieldPrefab);
+        }
+
+        public static void SetTogglePrefab(HomeController __instance)
+        {
+            _togglePrefab = GameObject.Instantiate(__instance.set_tog_accessb_jumpscare);
+            _togglePrefab.name = "MultiplayerTogglePrefab";
+            _togglePrefab.onValueChanged = new Toggle.ToggleEvent();
+
+            GameObject.DontDestroyOnLoad(_togglePrefab);
         }
 
         public static TMP_InputField CreateInputField(Transform canvasTransform, string name, Vector2 size, float fontSize, string text, bool isPassword)
@@ -254,6 +265,29 @@ namespace TootTallyMultiplayer
 
             return quickChatBox;
 
+        }
+
+
+        public static Toggle CreateToggle(Transform canvasTransform, string name, Vector2 size, string text)
+        {
+            var toggle = GameObject.Instantiate(_togglePrefab, canvasTransform);
+            RectTransform rect = toggle.GetComponent<RectTransform>();
+            rect.pivot = Vector3.zero;
+            rect.anchoredPosition = Vector3.zero;
+            rect.sizeDelta = size;
+
+            var label = GameObjectFactory.CreateSingleText(toggle.transform, $"{name}Label", text, Vector2.zero, new Vector2(250, 0), Theme.colors.leaderboard.text, GameObjectFactory.TextFont.Multicolore);
+            label.alignment = TextAlignmentOptions.Left;
+            label.fontStyle = FontStyles.Underline;
+            label.enableWordWrapping = false;
+            label.rectTransform.anchoredPosition = new Vector2(40, 0);
+            label.rectTransform.anchorMax = label.rectTransform.anchorMin = new Vector2(1, .5f);
+            label.fontSize = 28;
+            label.text = text;
+            toggle.name = name;
+            toggle.isOn = false;
+
+            return toggle;
         }
 
         public static GameObject GetVerticalBox(Vector2 size, Transform parent = null)

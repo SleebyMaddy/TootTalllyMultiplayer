@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TMPro;
 using TootTallyCore.Graphics;
 using TootTallyCore.Graphics.Animations;
+using TootTallyCore.Utils.TootTallyNotifs;
 using UnityEngine;
 using UnityEngine.UI;
 using static TootTallyMultiplayer.MultiplayerSystem;
@@ -18,6 +19,7 @@ namespace TootTallyMultiplayer.MultiplayerCore.InputPrompts
         public GameObject gameObject;
         private GameObject _container, _topContainer, _bottomContainer, _lobbySettingsContainer, _otherSettingsContainer;
         private CustomButton _cancelButton, _confirmButton;
+        private Toggle _freemodButton, _teamsButton;
 
         private TootTallyAnimation _lobbySettingsAnimation;
         public LobbySettingsInputPrompt(Transform canvasTransform, Action<string, string, string, string> OnConfirm)
@@ -77,14 +79,19 @@ namespace TootTallyMultiplayer.MultiplayerCore.InputPrompts
             _otherSettingsContainer = MultiplayerGameObjectFactory.GetVerticalBox(new Vector2(245, 0), _topContainer.transform);
             var otherLayout = _otherSettingsContainer.GetComponent<VerticalLayoutGroup>();
             otherLayout.childAlignment = TextAnchor.UpperLeft;
+            otherLayout.childForceExpandWidth = otherLayout.childControlWidth = false;
 
             var otherSettingsText = GameObjectFactory.CreateSingleText(_otherSettingsContainer.transform, "OtherSettingsText", "Other");
             otherSettingsText.fontSize = 42;
             otherSettingsText.rectTransform.sizeDelta = new Vector2(245, 55);
             otherSettingsText.alignment = TMPro.TextAlignmentOptions.Midline;
 
-            var tempLabel = GameObjectFactory.CreateSingleText(_otherSettingsContainer.transform, "WIPLabel", "Work in progress :)");
-            tempLabel.rectTransform.sizeDelta = new Vector2(140, 55);
+            var ButtonsLayout = _otherSettingsContainer.GetComponent<VerticalLayoutGroup>();
+            ButtonsLayout.spacing = 8f;
+            ButtonsLayout.childControlHeight = ButtonsLayout.childForceExpandHeight = false;
+
+            _freemodButton = MultiplayerGameObjectFactory.CreateToggle(_otherSettingsContainer.transform, "FreemodToggle", new Vector2(60, 60), "freemod");
+            _teamsButton = MultiplayerGameObjectFactory.CreateToggle(_otherSettingsContainer.transform, "TeamsToggle", new Vector2(60, 60), "teams");
 
             //Buttons Container
             _bottomContainer = MultiplayerGameObjectFactory.GetHorizontalBox(new Vector2(0, 90), _container.transform);
