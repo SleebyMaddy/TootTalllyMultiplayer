@@ -22,7 +22,7 @@ namespace TootTallyMultiplayer.MultiplayerCore.InputPrompts
         private Toggle _freemodButton, _teamsButton;
 
         private TootTallyAnimation _lobbySettingsAnimation;
-        public LobbySettingsInputPrompt(Transform canvasTransform, Action<string, string, string, string> OnConfirm)
+        public LobbySettingsInputPrompt(Transform canvasTransform, Action<string, string, string, string, bool, bool> OnConfirm)
         {
             gameObject = MultiplayerGameObjectFactory.GetBorderedVerticalBox(new Vector2(890, 490), 5, canvasTransform);
             _container = gameObject.transform.GetChild(0).gameObject;
@@ -99,7 +99,7 @@ namespace TootTallyMultiplayer.MultiplayerCore.InputPrompts
             buttonsLayout.spacing = 40f;
             buttonsLayout.childControlHeight = buttonsLayout.childForceExpandHeight = false;
 
-            _confirmButton = GameObjectFactory.CreateCustomButton(_bottomContainer.transform, Vector2.zero, new Vector2(170, 65), "Confirm", "ConfirmButton", delegate { OnConfirm?.Invoke(nameInput.text, descInput.text, passwordInput.text, maxPlayerInput.text); });
+            _confirmButton = GameObjectFactory.CreateCustomButton(_bottomContainer.transform, Vector2.zero, new Vector2(170, 65), "Confirm", "ConfirmButton", delegate { OnConfirm?.Invoke(nameInput.text, descInput.text, passwordInput.text, maxPlayerInput.text, _freemodButton.isOn, _teamsButton.isOn); });
             _cancelButton = GameObjectFactory.CreateCustomButton(_bottomContainer.transform, Vector2.zero, new Vector2(170, 65), "Cancel", "CancelButton", Hide);
         } 
 

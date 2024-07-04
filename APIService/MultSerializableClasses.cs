@@ -69,6 +69,11 @@ namespace TootTallyMultiplayer.APIService
             public string state;
         }
 
+        public enum MultiplayerTeamState
+        {
+            Red,
+            Blue,
+        }
         public enum UserState
         {
             None,

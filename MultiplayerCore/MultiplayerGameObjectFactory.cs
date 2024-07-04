@@ -34,6 +34,7 @@ namespace TootTallyMultiplayer
         private static void SetUserCardPrefab()
         {
             _userCardPrefab = GameObject.Instantiate(GetBorderedHorizontalBox(new Vector2(700, 72), 3));
+            var teamChanger = GameObjectFactory.CreateCustomButton(_userCardPrefab.transform, Vector2.zero, new Vector2(25, 65), "R", "TeamChanger");
             var container = _userCardPrefab.transform.GetChild(0).gameObject;
             var horizontalLayout = container.GetComponent<HorizontalLayoutGroup>();
             horizontalLayout.childAlignment = TextAnchor.MiddleLeft;
@@ -48,7 +49,7 @@ namespace TootTallyMultiplayer
 
             var textRank = GameObjectFactory.CreateSingleText(container.transform, $"Rank", $"", Vector2.one / 2f, new Vector2(190, 75), Theme.colors.leaderboard.text);
             textRank.alignment = TextAlignmentOptions.Right;
-
+            teamChanger.transform.SetAsFirstSibling();
             GameObject.DontDestroyOnLoad(_userCardPrefab);
         }
 
@@ -172,7 +173,7 @@ namespace TootTallyMultiplayer
         public static MultiplayerCard CreateUserCard(Transform canvasTransform)
         {
             var userCard = GameObject.Instantiate(_userCardPrefab, canvasTransform).AddComponent<MultiplayerCard>();
-            userCard.InitTexts();
+            userCard.Init();
             return userCard;
         }
 
@@ -211,7 +212,7 @@ namespace TootTallyMultiplayer
             return borderedBox;
         }
 
-        public static LobbySettingsInputPrompt CreateLobbySettingsInputPrompt(Transform canvasTransform, Action<string, string, string, string> OnConfirm)
+        public static LobbySettingsInputPrompt CreateLobbySettingsInputPrompt(Transform canvasTransform, Action<string, string, string, string, bool, bool> OnConfirm)
         {
             var lobbySettings = new LobbySettingsInputPrompt(canvasTransform, OnConfirm);
             lobbySettings.gameObject.transform.localScale = new Vector3(0, 0, 1);

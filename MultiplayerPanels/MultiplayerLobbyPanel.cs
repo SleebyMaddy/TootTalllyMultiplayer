@@ -29,6 +29,7 @@ namespace TootTallyMultiplayer.MultiplayerPanels
         private GameObject _quickChatPopup;
         private TootTallyAnimation _quickChatAnimation;
         private bool _isQuickChatPopupEnabled;
+        private bool _isTeamsEnabled, _isFreeModEnabled;
 
         private Dictionary<int, MultiplayerCard> _userCardsDict;
 
@@ -286,6 +287,7 @@ namespace TootTallyMultiplayer.MultiplayerPanels
 
             users.ForEach(DisplayUserInfo);
             UpdateScrolling(_userCardsDict.Count);
+            DisplayUserInfoDebug();
             _lastUsers = users;
         }
 
@@ -359,6 +361,7 @@ namespace TootTallyMultiplayer.MultiplayerPanels
             var color = UserStateToColor(userState);
             GameObjectFactory.TintImage(userCard.container.GetComponent<Image>(), color, .2f);
             userCard.image.color = color;
+            userCard.teamChanger.SetActive(_isTeamsEnabled && (IsSelf(user.id) || IsHost));
 
             if (IsHost && !controller.IsTimerStarted)
                 SetHostButtonText();
@@ -427,8 +430,6 @@ namespace TootTallyMultiplayer.MultiplayerPanels
                 UserState.NotReady => new Color(.95f, .95f, .2f, 1),
                 UserState.Ready => new Color(.2f, .95f, .2f, 1),
                 UserState.Host => new Color(.95f, .2f, .95f, 1),
-                //UserState.TeamRed => new Color(.95f, .2f, .2f, 1), 
-                //UserState.TeamBlue => new Color(.2f, .2f, .95f, 1), probably move these to a button beside the player, rather than the players state
                 _ => new Color(.95f, .95f, .95f, 1),
             };
 
@@ -509,13 +510,39 @@ namespace TootTallyMultiplayer.MultiplayerPanels
                     _startGameButton.textHolder.text = $"{_readyCount}/{maxCount} Force Start";
         }
 
-        public void OnSettingsPromptConfirm(string name, string desc, string password, string maxPlayer)
+        public void OnSettingsPromptConfirm(string name, string desc, string password, string maxPlayer, bool freemodEnabled, bool teamsEnabled)
         {
             if (!MultiplayerCreatePanel.ValidateInput(name, desc, password, maxPlayer)) return;
 
             controller.SendSetLobbySettings(name, desc, password, int.Parse(maxPlayer));
             TootTallyNotifManager.DisplayNotif("Sending new lobby info...");
             _lobbySettingsInputPrompt.Hide();
+            if (freemodEnabled)
+            {
+                TootTallyNotifManager.DisplayNotif("Freemod enabled");
+            }
+            else
+            {
+                TootTallyNotifManager.DisplayNotif("Freemod disabled");
+            }
+            if (teamsEnabled)
+            {
+                TootTallyNotifManager.DisplayNotif("Teams enabled");
+                _isTeamsEnabled = true;
+                foreach (var item in _userCardsDict.Values)
+                {
+                    item.teamChanger.SetActive(true);
+                }
+            }
+            else
+            {
+                TootTallyNotifManager.DisplayNotif("Teams disabled");
+                _isTeamsEnabled = false;
+                foreach (var item in _userCardsDict.Values)
+                {
+                    item.teamChanger.SetActive(false);
+                }
+            }
         }
 
         public void OnBackButtonClick()
